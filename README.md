@@ -1,5 +1,5 @@
 # Vaultbreaker
-Vaultbreaker ZIne Descent II - Breaking Through the Paradigm
+Vaultbreaker Zine Descent II - Breaking Through the Paradigm
 
 ## About
 
