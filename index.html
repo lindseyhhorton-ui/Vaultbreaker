@@ -341,11 +341,21 @@
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
                         body: JSON.stringify(payload)
                     });
                     const data = await response.json();
-                    return data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    const result = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (!result) {
+                        throw new Error("Invalid API response structure");
+                    }
+                    return result;
                 } catch (e) {
+                    if (i === 4) {
+                        throw new Error("Transmission Failed: Unable to reach the Oracle");
+                    }
                     await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
                 }
             }
@@ -354,12 +364,17 @@
 
         async function generateInitialSeal() {
             const sealEl = document.getElementById('session-seal');
+            const btn = event?.target;
+            if (btn) btn.disabled = true;
+            
             sealEl.innerText = "✨ PULSING...";
             try {
-                const result = await geminiCall("Generate a one-line session-specific archive status status in the format: ARCHIVE STATUS: [STATUS] // SYNC: [SYNC-LEVEL]. Keep it under 60 characters.");
+                const result = await geminiCall("Generate a one-line session-specific archive status in the format: ARCHIVE STATUS: [STATUS] // SYNC: [SYNC-LEVEL]. Keep it under 60 characters.");
                 sealEl.innerText = result.trim().toUpperCase();
             } catch (e) {
                 sealEl.innerText = "SYNC INTERRUPTED";
+            } finally {
+                if (btn) btn.disabled = false;
             }
         }
 
@@ -367,9 +382,11 @@
             const input = document.getElementById('journal-input').value;
             const resultBox = document.getElementById('decipher-result');
             const loader = document.getElementById('loading-overlay');
+            const btn = event?.target;
             
             if (!input.trim()) return;
-
+            
+            if (btn) btn.disabled = true;
             loader.style.display = 'flex';
             try {
                 const prompt = `Decipher the following initiate journal entry for hidden patterns and glitch-frequency resonance. Keep the interpretation under 3 sentences and very cryptic: "${input}"`;
@@ -381,12 +398,16 @@
                 resultBox.classList.remove('hidden');
             } finally {
                 loader.style.display = 'none';
+                if (btn) btn.disabled = false;
             }
         }
 
         async function speakRitual() {
             const text = document.getElementById('ritual-text').innerText;
             const loader = document.getElementById('loading-overlay');
+            const btn = event?.target;
+            
+            if (btn) btn.disabled = true;
             loader.style.display = 'flex';
 
             try {
@@ -403,17 +424,27 @@
 
                 const response = await fetch(url, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify(payload)
                 });
                 const data = await response.json();
+                
+                if (!data.candidates?.[0]?.content?.parts?.[0]?.inlineData) {
+                    throw new Error("Invalid audio response structure");
+                }
+                
                 const base64Audio = data.candidates[0].content.parts[0].inlineData.data;
                 const sampleRate = parseInt(data.candidates[0].content.parts[0].inlineData.mimeType.match(/rate=(\d+)/)?.[1] || "24000");
 
                 playPCM(base64Audio, sampleRate);
             } catch (e) {
                 console.error(e);
+                alert(">> ERROR: The void whispers in silence. Audio transmission failed.");
             } finally {
                 loader.style.display = 'none';
+                if (btn) btn.disabled = false;
             }
         }
 
@@ -445,6 +476,12 @@
             const blob = new Blob([wavHeader, bytes], { type: 'audio/wav' });
             const audioUrl = URL.createObjectURL(blob);
             const audio = new Audio(audioUrl);
+            
+            // Clean up the blob URL after playback to prevent memory leaks
+            audio.onended = () => {
+                URL.revokeObjectURL(audioUrl);
+            };
+            
             audio.play();
         }
 
