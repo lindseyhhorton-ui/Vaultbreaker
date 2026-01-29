@@ -1,0 +1,158 @@
+:root {
+    --primary-color: #1a1a2e;
+    --secondary-color: #16213e;
+    --accent-color: #e94560;
+    --text-color: #eaeaea;
+    --highlight-color: #0f3460;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    line-height: 1.8;
+    color: var(--text-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    min-height: 100vh;
+}
+
+header {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid var(--accent-color);
+}
+
+header h1 {
+    font-size: 3.5rem;
+    letter-spacing: 0.5rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    font-weight: 900;
+    text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--text-color);
+    letter-spacing: 0.2rem;
+}
+
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+section {
+    margin-bottom: 3rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-color);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+h2 {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3rem;
+}
+
+h3 {
+    font-size: 1.8rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+article {
+    margin-bottom: 2rem;
+}
+
+article:last-child {
+    margin-bottom: 0;
+}
+
+p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    line-height: 1.9;
+}
+
+.manifesto {
+    background: rgba(233, 69, 96, 0.1);
+    border-left: 4px solid var(--accent-color);
+    border-right: 4px solid var(--accent-color);
+}
+
+.manifesto p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 2;
+    color: #fff;
+}
+
+.call-to-action {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(233, 69, 96, 0.2) 0%, rgba(15, 52, 96, 0.2) 100%);
+    border: 2px solid var(--accent-color);
+    padding: 3rem;
+}
+
+.call-to-action p {
+    font-size: 1.2rem;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-top: 1px solid var(--accent-color);
+    margin-top: 3rem;
+}
+
+footer p {
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2.5rem;
+        letter-spacing: 0.3rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    section {
+        padding: 1.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+}
