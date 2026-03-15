@@ -165,9 +165,12 @@
             <div id="session-seal" class="inline-block border border-orange-500 p-2 mb-4 text-xs font-tech tracking-widest text-orange-500">
                 ARCHIVE STATUS: DECRYPTED // SYNC: TRIAD-STABLE
             </div>
-            <div class="mb-4">
+            <div class="mb-4 space-x-4">
                 <button onclick="generateInitialSeal()" class="text-[10px] font-terminal text-orange-300 hover:text-white transition">
                     ✨ Generate Aetheric Pulse
+                </button>
+                <button onclick="resetApiKey()" class="text-[10px] font-terminal text-stone-500 hover:text-orange-400 transition">
+                    🔑 Reset API Key
                 </button>
             </div>
             <h1 class="font-mythic text-4xl md:text-6xl text-white mb-2 uppercase tracking-tighter">Vaultbreaker Zine</h1>
@@ -328,9 +331,30 @@
     </div>
 
     <script>
-        const apiKey = ""; // Provided by environment
+        // API Key Management with localStorage
+        function getApiKey() {
+            let apiKey = localStorage.getItem('gemini_api_key');
+            if (!apiKey) {
+                apiKey = prompt("🔑 Please enter your Gemini API Key:\n\nYour key will be stored securely in your browser's local storage.");
+                if (apiKey && apiKey.trim()) {
+                    localStorage.setItem('gemini_api_key', apiKey.trim());
+                    return apiKey.trim();
+                } else {
+                    throw new Error("API key is required to access the Oracle");
+                }
+            }
+            return apiKey;
+        }
+
+        function resetApiKey() {
+            if (confirm("⚠️ Are you sure you want to reset your Gemini API Key?\n\nYou will be prompted to enter a new key on your next request.")) {
+                localStorage.removeItem('gemini_api_key');
+                alert("✨ API Key has been cleared from local storage.");
+            }
+        }
 
         async function geminiCall(prompt, model = "gemini-2.5-flash-preview-09-2025") {
+            const apiKey = getApiKey();
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
@@ -411,6 +435,7 @@
             loader.style.display = 'flex';
 
             try {
+                const apiKey = getApiKey();
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
                 const payload = {
                     contents: [{ parts: [{ text: `Say in a haunting, resonant whisper: ${text}` }] }],
